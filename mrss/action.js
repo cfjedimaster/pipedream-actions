@@ -4,7 +4,7 @@ module.exports = {
   name: "Multi RSS",
   description: "Multi RSS Reader",
   key: "multi_rss",
-  version: "0.1.0",
+  version: "0.2.0",
   type: "action",
   props: {
 	feeds: {
@@ -22,8 +22,10 @@ module.exports = {
   async run() {
 
 	const getFeeds = async function(url) {
-	  	let parser = new Parser();
-		return parser.parseURL(url);
+		return new Promise((resolve, reject) => {
+			let parser = new Parser();
+			resolve(parser.parseURL(url));
+		})
 	}
 
 	/*
@@ -39,8 +41,15 @@ module.exports = {
 	*/
 	let result = [];
 
+	let requests = [];
 	for(let i=0; i < this.feeds.length; i++) {
-		let feedResult = await getFeeds(this.feeds[i]);
+		requests.push(getFeeds(this.feeds[i]));
+	}
+
+	let results = await Promise.all(requests);
+
+	for(let i=0; i < results.length; i++) {
+		let feedResult = results[i];
 		let feed = {
 			title: feedResult.title, 
 			description: feedResult.description, 
@@ -62,6 +71,7 @@ module.exports = {
 			})
 
 		}
+		
 	}
 
 	// now sort by pubDate, if merging of course
