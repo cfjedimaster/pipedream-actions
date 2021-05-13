@@ -1,10 +1,10 @@
 const Parser = require('rss-parser');
 
 module.exports = {
-  name: "Multi RSS",
-  description: "Multi RSS Reader",
-  key: "multi_rss",
-  version: "0.2.0",
+  name: "Merge RSS Feeds",
+  description: "Retrieve multiple RSS feeds and return a merged array of items sorted by date.",
+  key: "rss-merge-rss-feeds",
+  version: "0.2.1",
   type: "action",
   props: {
 	feeds: {
@@ -17,6 +17,10 @@ module.exports = {
 		optional:true,
 		default:true,
 		description:"If true, all items are returned in a date sorted array. If false, each feed is returned as one result in the array."
+	},
+	rss: {
+		type: "app",
+		app: "rss"
 	}
   },
   async run() {
